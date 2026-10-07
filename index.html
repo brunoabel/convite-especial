@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Um Convite Especial</title>
+  <meta name="description" content="Um convite exclusivo e elegante para um encontro especial.">
+  <meta name="theme-color" content="#fbf6f5">
+
+  <!-- Google Fonts: Cormorant Garamond (Editorial & Sofisticada) + Plus Jakarta Sans (Moderna e Limpa) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM - PALETA ROSA SOFISTICADA & ESTÉTICA EDITORIAL
+       ========================================================================== */
+    :root {
+      /* Fundo suave & quente */
+      --bg-warm: #faf5f4;
+      --bg-surface: rgba(255, 255, 255, 0.82);
+      
+      /* Tons nobres de Rosa, Blush e Vinho Suave */
+      --color-rose-deep: #702f3f;
+      --color-rose-primary: #8a3c50;
+      --color-rose-accent: #b05c70;
+      --color-rose-soft: #f4e3e6;
+      --color-rose-glow: rgba(176, 92, 112, 0.22);
+      
+      --color-champagne: #e8d3be;
+      --color-sand: #f3eae6;
+      
+      /* Tipografia */
+      --text-heading: #2d1820;
+      --text-body: #543942;
+      --text-muted: #856972;
+      --text-light: #ab959d;
+      
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      
+      /* Glassmorphism de Luxo */
+      --glass-border: rgba(255, 255, 255, 0.95);
+      --glass-border-subtle: rgba(176, 92, 112, 0.14);
+      --glass-shadow: 0 30px 65px -15px rgba(112, 47, 63, 0.12),
+                      0 10px 25px -10px rgba(112, 47, 63, 0.08),
+                      0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+      
+      --radius-card: 28px;
+      --radius-pill: 9999px;
+      --radius-elem: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: var(--bg-warm);
+      font-family: var(--font-sans);
+      color: var(--text-body);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Iluminação ambiente suave em tons de rosé e luz quente */
+    .ambient-atmosphere {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 15% 20%, #fbedef 0%, transparent 50%),
+                  radial-gradient(circle at 85% 80%, #f6e8e5 0%, transparent 55%),
+                  linear-gradient(145deg, #fbf7f6 0%, #faf3f2 100%);
+    }
+
+    .ambient-light-bloom {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.55;
+      animation: subtlePulse 12s ease-in-out infinite alternate;
+    }
+
+    .bloom-1 {
+      width: 380px;
+      height: 380px;
+      background: #f7dee2;
+      top: -100px;
+      left: -80px;
+    }
+
+    .bloom-2 {
+      width: 340px;
+      height: 340px;
+      background: #f3e6de;
+      bottom: -80px;
+      right: -80px;
+      animation-delay: -6s;
+    }
+
+    @keyframes subtlePulse {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+      100% { transform: scale(1.08) translate(20px, 15px); opacity: 0.65; }
+    }
+
+    /* Container Principal */
+    .viewport {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 22px 48px 22px;
+    }
+
+    .card-wrapper {
+      width: 100%;
+      max-width: 385px;
+      position: relative;
+    }
+
+    /* Card com Glassmorphism Refinado */
+    .card-screen {
+      width: 100%;
+      background: var(--bg-surface);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: 1.5px solid var(--glass-border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--glass-shadow);
+      padding: 34px 26px 30px 26px;
+      text-align: center;
+      display: none;
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+      filter: blur(5px);
+      transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s ease;
+      position: relative;
+    }
+
+    .card-screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+
+    .card-screen.exiting {
+      opacity: 0;
+      transform: translateY(-16px) scale(0.97);
+      filter: blur(6px);
+      pointer-events: none;
+    }
+
+    /* Tag de Cabeçalho Discreta */
+    .exclusive-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-rose-primary);
+      background: var(--color-rose-soft);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 22px;
+      display: inline-block;
+      border: 1px solid rgba(176, 92, 112, 0.18);
+    }
+
+    /* Tipografia de Alto Padrão */
+    .subtle-prelude {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 20px;
+      padding: 0 4px;
+    }
+
+    .main-title {
+      font-family: var(--font-serif);
+      font-size: 1.62rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      line-height: 1.32;
+      margin-bottom: 28px;
+      letter-spacing: -0.015em;
+    }
+
+    .screen-heading {
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      line-height: 1.3;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+
+    .screen-desc {
+      font-size: 0.92rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 22px;
+    }
+
+    .custom-input[type="text"] {
+      cursor: text;
+    }
+
+    .custom-input::placeholder {
+      color: var(--text-light);
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    /* Linha decorativa fina */
+    .delicate-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--color-rose-accent);
+      opacity: 0.4;
+      margin: 10px auto 16px auto;
+    }
+
+    /* Botões */
+    .actions-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      min-height: 52px;
+      position: relative;
+      margin-top: 4px;
+    }
+
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border: none;
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      padding: 14px 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.4, 1);
+      position: relative;
+      white-space: nowrap;
+    }
+
+    /* Botão SIM - Sofisticado Rosa Nobre / Vinho Aveludado */
+    .btn-accept {
+      background: linear-gradient(135deg, var(--color-rose-primary) 0%, var(--color-rose-deep) 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 24px -6px rgba(112, 47, 63, 0.38),
+                  0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+      z-index: 2;
+    }
+
+    .btn-accept:hover {
+      background: linear-gradient(135deg, var(--color-rose-accent) 0%, var(--color-rose-primary) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -6px rgba(112, 47, 63, 0.48);
+    }
+
+    .btn-accept:active {
+      transform: translateY(1px);
+    }
+
+    /* Botão NÃO - Neutro de Alto Padrão */
+    .btn-refuse {
+      background: #faf2f0;
+      color: var(--text-muted);
+      border: 1px solid rgba(176, 92, 112, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      z-index: 999;
+      user-select: none;
+      will-change: transform, left, top;
+    }
+
+    .btn-refuse.running {
+      position: fixed !important;
+      transition: left 0.32s cubic-bezier(0.25, 1, 0.5, 1),
+                  top 0.32s cubic-bezier(0.25, 1, 0.5, 1),
+                  transform 0.28s ease !important;
+    }
+
+    /* Botão Principal de Confirmação */
+    .btn-submit-date {
+      width: 100%;
+      background: linear-gradient(135deg, var(--color-rose-primary) 0%, var(--color-rose-deep) 100%);
+      color: #ffffff;
+      padding: 16px 24px;
+      font-size: 0.95rem;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 12px 28px -8px rgba(112, 47, 63, 0.4);
+      margin-top: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit-date::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -70%;
+      width: 60%;
+      height: 200%;
+      background: linear-gradient(
+        60deg,
+        rgba(255, 255, 255, 0) 20%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0) 80%
+      );
+      transform: rotate(25deg);
+      animation: subtleSheen 4.5s infinite ease-in-out;
+    }
+
+    @keyframes subtleSheen {
+      0% { left: -70%; }
+      30%, 100% { left: 140%; }
+    }
+
+    .btn-submit-date:hover {
+      background: linear-gradient(135deg, var(--color-rose-accent) 0%, var(--color-rose-primary) 100%);
+      transform: translateY(-1px);
+    }
+
+    /* Formulário Minimalista e Discreto */
+    .form-minimal {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .input-field-group {
+      width: 100%;
+      text-align: left;
+    }
+
+    .field-caption {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      margin-left: 2px;
+      display: block;
+    }
+
+    .field-frame {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(176, 92, 112, 0.25);
+      border-radius: var(--radius-elem);
+      box-shadow: 0 4px 14px rgba(112, 47, 63, 0.04);
+      height: 52px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      transition: all 0.25s ease;
+    }
+
+    .field-frame:focus-within {
+      border-color: var(--color-rose-primary);
+      box-shadow: 0 0 0 3px rgba(138, 60, 80, 0.15),
+                  0 6px 18px rgba(112, 47, 63, 0.08);
+      background: #ffffff;
+    }
+
+    .custom-input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-heading);
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .custom-input::-webkit-calendar-picker-indicator {
+      opacity: 0.55;
+      cursor: pointer;
+      filter: invert(20%) sepia(40%) saturate(1200%) hue-rotate(300deg);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .custom-input::-webkit-calendar-picker-indicator:hover {
+      transform: scale(1.1);
+      opacity: 0.9;
+    }
+
+    .field-frame.error-shake {
+      animation: shake 0.4s ease-in-out;
+      border-color: #b91c1c;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    /* Tela 3 - Resumo Elegante */
+    .summary-card-refined {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(176, 92, 112, 0.18);
+      border-radius: var(--radius-elem);
+      padding: 16px 18px;
+      margin: 14px 0 18px 0;
+      text-align: left;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 0.88rem;
+    }
+
+    .summary-item:not(:last-child) {
+      border-bottom: 1px dashed rgba(176, 92, 112, 0.15);
+    }
+
+    .summary-label {
+      color: var(--text-muted);
+    }
+
+    .summary-val {
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+
+    .conclusion-editorial-text {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--text-body);
+      line-height: 1.48;
+      margin-bottom: 20px;
+      padding: 0 6px;
+    }
+
+    .btn-whatsapp-chic {
+      width: 100%;
+      background: #272023;
+      color: #ffffff;
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.03em;
+      box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.25);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-whatsapp-chic:hover {
+      background: #181215;
+      transform: translateY(-2px);
+    }
+
+    /* Rodapé Minimalista Fixo */
+    .site-footer {
+      position: fixed;
+      bottom: 14px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Responsividade refinada */
+    @media (max-height: 660px) {
+      .card-screen {
+        padding: 24px 20px 22px 20px;
+      }
+      .exclusive-badge {
+        margin-bottom: 14px;
+      }
+      .subtle-prelude {
+        font-size: 0.95rem;
+        margin-bottom: 14px;
+      }
+      .main-title {
+        font-size: 1.35rem;
+        margin-bottom: 20px;
+      }
+      .editorial-photo-box {
+        height: 130px;
+        margin-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Atmosfera de Iluminação Suave -->
+  <div class="ambient-atmosphere">
+    <div class="ambient-light-bloom bloom-1"></div>
+    <div class="ambient-light-bloom bloom-2"></div>
+  </div>
+
+  <main class="viewport">
+    <div class="card-wrapper">
+
+      <!-- ====================================================================
+           TELA 1: O CONVITE
+           ==================================================================== -->
+      <section id="screen1" class="card-screen active" aria-label="Convite">
+        <span class="exclusive-badge" id="badgeScreen1">Convite Especial</span>
+
+        <!-- Texto superior sutil, menor e em itálico -->
+        <p class="subtle-prelude">
+          "Eu prometo que esse site é mais fácil de usar do que o site dos bilhetes do show para ver o djavan..."
+        </p>
+
+        <!-- Texto principal em destaque, bold e centralizado -->
+        <h1 class="main-title">
+          Já passou da hora de um bom brinde presencial. Topa sair comigo essa semana?
+        </h1>
+
+        <!-- Botões elegantes de ação -->
+        <div class="actions-container" id="actionGroup">
+          <button id="btnYes" class="btn btn-accept" type="button">
+            Sim
+          </button>
+          <button id="btnNo" class="btn btn-refuse" type="button">
+            Não
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TELA 2: O AGENDAMENTO
+           ==================================================================== -->
+      <section id="screen2" class="card-screen" aria-label="Agendamento">
+        <span class="exclusive-badge">O Agendamento</span>
+
+        <h2 class="screen-heading">eu nao aceitava não como resposta...</h2>
+        <p class="screen-desc">Que dia e hora fica melhor para você?</p>
+
+        <form id="appointmentForm" class="form-minimal" onsubmit="event.preventDefault();">
+          <div class="input-field-group">
+            <label for="nameField" class="field-caption">Seu nome</label>
+            <div class="field-frame" id="nameFrame">
+              <input 
+                type="text" 
+                id="nameField" 
+                class="custom-input" 
+                placeholder="Como posso te chamar?" 
+                autocomplete="name"
+                required 
+                aria-label="Seu nome"
+              />
+            </div>
+          </div>
+
+          <div class="input-field-group">
+            <label for="dateField" class="field-caption">Data do nosso encontro</label>
+            <div class="field-frame" id="dateFrame">
+              <input 
+                type="date" 
+                id="dateField" 
+                class="custom-input" 
+                required 
+                aria-label="Data do encontro"
+              />
+            </div>
+          </div>
+
+          <div class="input-field-group">
+            <label for="timeField" class="field-caption">Horário</label>
+            <div class="field-frame" id="timeFrame">
+              <input 
+                type="time" 
+                id="timeField" 
+                class="custom-input" 
+                required 
+                aria-label="Horário do encontro"
+              />
+            </div>
+          </div>
+
+          <button id="btnConfirmDate" class="btn btn-submit-date" type="submit">
+            Confirmar Encontro
+          </button>
+        </form>
+      </section>
+
+      <!-- ====================================================================
+           TELA 3: CONCLUSÃO
+           ==================================================================== -->
+      <section id="screen3" class="card-screen" aria-label="Confirmação Final">
+        <span class="exclusive-badge">Encontro Confirmado</span>
+
+        <h2 class="screen-heading" style="font-size: 1.85rem; margin-top: 6px;">Fechado<span id="dispNameTitle"></span>!</h2>
+
+        <div class="summary-card-refined">
+          <div class="summary-item">
+            <span class="summary-label">Convite para</span>
+            <span class="summary-val" id="dispName">--</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Data selecionada</span>
+            <span class="summary-val" id="dispDate">--</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Horário</span>
+            <span class="summary-val" id="dispTime">--</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Confirmação</span>
+            <span class="summary-val" style="color: var(--color-rose-deep);">Confirmadíssimo</span>
+          </div>
+        </div>
+
+        <!-- Texto de encerramento conectando com a frase do Djavan e tratando pelo nome -->
+        <p class="conclusion-editorial-text" id="conclusionText">
+          Já está na minha agenda<span id="dispNameBody"></span>. Prometo que o nosso encontro vai ser ainda melhor do que finalmente conseguir aquele ingresso pro Djavan! ✨
+        </p>
+
+        <!-- Ação para enviar confirmação no WhatsApp -->
+        <a id="btnShareWhatsApp" class="btn btn-whatsapp-chic" href="#" target="_blank" rel="noopener noreferrer">
+          Avisar o Bruno no WhatsApp
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    Desenvolvido por Bruno Abel
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* --- ELEMENTOS DO DOM --- */
+      const screen1 = document.getElementById('screen1');
+      const screen2 = document.getElementById('screen2');
+      const screen3 = document.getElementById('screen3');
+
+      const btnYes = document.getElementById('btnYes');
+      const btnNo = document.getElementById('btnNo');
+      const btnConfirmDate = document.getElementById('btnConfirmDate');
+      const btnShareWhatsApp = document.getElementById('btnShareWhatsApp');
+
+      const nameField = document.getElementById('nameField');
+      const nameFrame = document.getElementById('nameFrame');
+      const badgeScreen1 = document.getElementById('badgeScreen1');
+
+      const dateField = document.getElementById('dateField');
+      const timeField = document.getElementById('timeField');
+      const dateFrame = document.getElementById('dateFrame');
+      const timeFrame = document.getElementById('timeFrame');
+      const appointmentForm = document.getElementById('appointmentForm');
+
+      const dispName = document.getElementById('dispName');
+      const dispNameTitle = document.getElementById('dispNameTitle');
+      const dispNameBody = document.getElementById('dispNameBody');
+      const dispDate = document.getElementById('dispDate');
+      const dispTime = document.getElementById('dispTime');
+
+      /* --- VERIFICAÇÃO DE PARÂMETRO NA URL (?nome=...) --- */
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramName = (urlParams.get('nome') || urlParams.get('name') || '').trim();
+      if (paramName) {
+        if (badgeScreen1) {
+          badgeScreen1.textContent = `Convite Especial • ${paramName}`;
+        }
+        if (nameField) {
+          nameField.value = paramName;
+        }
+      }
+
+      /* --- ESTADO --- */
+      let noScale = 1.0;
+
+      /* --- CONFETTI SOFISTICADO (PALETA CHAMPAGNE, ROSE GOLD & BLUSH) --- */
+      function launchRefinedConfetti() {
+        if (typeof confetti === 'function') {
+          // Cores nobres: Rosé Gold, Champanhe, Blush, Pérola e Vinho Suave
+          const elegantColors = ['#c57d8a', '#e8d3be', '#f4e3e6', '#8a3c50', '#d4af37'];
+
+          confetti({
+            particleCount: 55,
+            spread: 80,
+            origin: { y: 0.65 },
+            colors: elegantColors,
+            disableForReducedMotion: true
+          });
+
+          setTimeout(() => {
+            confetti({
+              particleCount: 30,
+              angle: 60,
+              spread: 50,
+              origin: { x: 0.1, y: 0.7 },
+              colors: elegantColors
+            });
+            confetti({
+              particleCount: 30,
+              angle: 120,
+              spread: 50,
+              origin: { x: 0.9, y: 0.7 },
+              colors: elegantColors
+            });
+          }, 200);
+        }
+      }
+
+      /* --- TRANSIÇÃO ELEGANTE ENTRE TELAS --- */
+      function navigateTo(from, to, callback) {
+        from.classList.remove('active');
+        from.classList.add('exiting');
+
+        setTimeout(() => {
+          from.style.display = 'none';
+          from.classList.remove('exiting');
+
+          if (typeof callback === 'function') {
+            callback();
+          }
+
+          to.style.display = 'flex';
+          void to.offsetWidth; // Força reflow para animação suave
+          to.classList.add('active');
+        }, 400);
+      }
+
+      /* --- MATEMÁTICA E ESQUIVA DO BOTÃO 'NÃO' --- */
+      function dodgeButton(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+
+        // Define position fixed no primeiro acionamento
+        if (!btnNo.classList.contains('running')) {
+          const rect = btnNo.getBoundingClientRect();
+          btnNo.style.width = `${rect.width}px`;
+          btnNo.style.height = `${rect.height}px`;
+          btnNo.style.left = `${rect.left}px`;
+          btnNo.style.top = `${rect.top}px`;
+          btnNo.classList.add('running');
+        }
+
+        // Redução proporcional de 15% a cada fuga
+        noScale = Math.max(0.22, noScale * 0.85);
+
+        // Clamping rigoroso para se manter no viewport
+        const safePadding = 24;
+        const currentW = btnNo.offsetWidth * noScale;
+        const currentH = btnNo.offsetHeight * noScale;
+
+        const maxAvailableX = window.innerWidth - currentW - safePadding;
+        const maxAvailableY = window.innerHeight - currentH - safePadding;
+
+        const minAvailableX = safePadding;
+        const minAvailableY = safePadding;
+
+        const currRect = btnNo.getBoundingClientRect();
+        let targetX, targetY;
+        let attempts = 0;
+
+        do {
+          targetX = Math.floor(Math.random() * (maxAvailableX - minAvailableX + 1)) + minAvailableX;
+          targetY = Math.floor(Math.random() * (maxAvailableY - minAvailableY + 1)) + minAvailableY;
+          attempts++;
+        } while (
+          attempts < 8 &&
+          Math.hypot(targetX - currRect.left, targetY - currRect.top) < 140
+        );
+
+        targetX = Math.max(minAvailableX, Math.min(targetX, maxAvailableX));
+        targetY = Math.max(minAvailableY, Math.min(targetY, maxAvailableY));
+
+        btnNo.style.left = `${targetX}px`;
+        btnNo.style.top = `${targetY}px`;
+        btnNo.style.transform = `scale(${noScale})`;
+      }
+
+      // Eventos para desktop e mobile
+      btnNo.addEventListener('mouseenter', dodgeButton);
+      btnNo.addEventListener('mouseover', dodgeButton);
+      btnNo.addEventListener('touchstart', dodgeButton, { passive: false });
+      btnNo.addEventListener('click', dodgeButton);
+
+      // Esquiva por aproximação no desktop
+      document.addEventListener('mousemove', (e) => {
+        if (!screen1.classList.contains('active')) return;
+        const rect = btnNo.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+
+        if (dist < 60) {
+          dodgeButton();
+        }
+      });
+
+      /* --- AÇÃO DO BOTÃO 'SIM' --- */
+      btnYes.addEventListener('click', () => {
+        if (btnNo.classList.contains('running')) {
+          btnNo.style.opacity = '0';
+          btnNo.style.pointerEvents = 'none';
+        }
+
+        navigateTo(screen1, screen2, () => {
+          launchRefinedConfetti();
+        });
+      });
+
+      /* --- CONFIGURAÇÃO DA DATA PADRÃO --- */
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      dateField.min = `${yyyy}-${mm}-${dd}`;
+
+      // Sugestão para o próximo fim de semana às 20:00
+      const nextWeekend = new Date();
+      nextWeekend.setDate(today.getDate() + ((6 - today.getDay() + 7) % 7 || 7));
+      const sY = nextWeekend.getFullYear();
+      const sM = String(nextWeekend.getMonth() + 1).padStart(2, '0');
+      const sD = String(nextWeekend.getDate()).padStart(2, '0');
+      dateField.value = `${sY}-${sM}-${sD}`;
+      timeField.value = '20:00';
+
+      /* --- CONFIRMAÇÃO DO AGENDAMENTO --- */
+      appointmentForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const enteredName = nameField ? nameField.value.trim() : '';
+        const selectedDate = dateField.value;
+        const selectedTime = timeField.value;
+
+        if (!enteredName) {
+          if (nameFrame) {
+            nameFrame.classList.add('error-shake');
+            setTimeout(() => nameFrame.classList.remove('error-shake'), 450);
+          }
+          if (nameField) nameField.focus();
+          return;
+        }
+
+        if (!selectedDate) {
+          dateFrame.classList.add('error-shake');
+          setTimeout(() => dateFrame.classList.remove('error-shake'), 450);
+          return;
+        }
+
+        if (!selectedTime) {
+          timeFrame.classList.add('error-shake');
+          setTimeout(() => timeFrame.classList.remove('error-shake'), 450);
+          return;
+        }
+
+        // Atualização dos campos de exibição tratando pelo nome
+        if (dispName) dispName.textContent = enteredName;
+        if (dispNameTitle) dispNameTitle.textContent = `, ${enteredName}`;
+        if (dispNameBody) dispNameBody.textContent = `, ${enteredName}`;
+
+        try {
+          const [ano, mes, dia] = selectedDate.split('-');
+          const dateObj = new Date(ano, mes - 1, dia);
+          const formatted = dateObj.toLocaleDateString('pt-BR', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long'
+          });
+          dispDate.textContent = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+        } catch (err) {
+          dispDate.textContent = selectedDate;
+        }
+
+        dispTime.textContent = `${selectedTime}h`;
+
+        // Link de WhatsApp com o número de Bruno (+351 935 045 186)
+        const msg = `Olá Bruno! Aqui é a ${enteredName}. Encontro confirmado para ${dispDate.textContent} às ${selectedTime}h. Vai ser ainda melhor que o show do Djavan! ✨`;
+        btnShareWhatsApp.href = `https://wa.me/351935045186?text=${encodeURIComponent(msg)}`;
+
+        navigateTo(screen2, screen3, () => {
+          launchRefinedConfetti();
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
